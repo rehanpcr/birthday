@@ -15,8 +15,38 @@ const VideoMessages = () => {
   
   // Ref & Scroll Logic
   const scrollRef = useRef(null);
-  const contentRef = useRef(null);
-  const [scrollWidth, setScrollWidth] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  // --- EFEK: Auto Scroll (Ping-Pong) ---
+  useEffect(() => {
+    const scrollContainer = scrollRef.current;
+    if (!scrollContainer || videos.length === 0) return;
+
+    let animationFrameId;
+    let direction = 1; // 1 = kanan, -1 = kiri
+    const speed = 0.5; // Kecepatan gerak (sesuaikan jika terlalu cepat/lambat)
+
+    const animateScroll = () => {
+      if (!isPaused) {
+        // Cek mentok kanan
+        if (scrollContainer.scrollLeft + scrollContainer.clientWidth >= scrollContainer.scrollWidth - 1) {
+          direction = -1; 
+        } 
+        // Cek mentok kiri
+        else if (scrollContainer.scrollLeft <= 0) {
+          direction = 1;
+        }
+        
+        scrollContainer.scrollLeft += direction * speed;
+      }
+      animationFrameId = requestAnimationFrame(animateScroll);
+    };
+
+    // Mulai animasi
+    animationFrameId = requestAnimationFrame(animateScroll);
+
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [isPaused, videos]);
 
   // Fetch Data
   useEffect(() => {
@@ -37,15 +67,6 @@ const VideoMessages = () => {
     };
     fetchVideos();
   }, []);
-
-  // Hitung lebar scroll (Ping-Pong Effect)
-  useEffect(() => {
-    if (contentRef.current && scrollRef.current && videos.length > 0) {
-      const contentW = contentRef.current.scrollWidth;
-      const containerW = scrollRef.current.offsetWidth;
-      setScrollWidth(contentW - containerW > 0 ? contentW - containerW + 40 : 0);
-    }
-  }, [videos, loading]);
 
   const handleNext = () => {
     nextStep();
@@ -102,93 +123,93 @@ const VideoMessages = () => {
             <p style={{ color: '#ffffffff' }}>Belum ada video ucapan yang masuk nih.</p>
           </div>
         ) : (
-          /* === CONTAINER SCROLL HORIZONTAL (PING-PONG) === */
+          /* === CONTAINER SCROLL HORIZONTAL (AUTO + MANUAL) === */
           <div 
             ref={scrollRef}
+            // Event Handlers untuk Stop/Resume Auto Scroll
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+            onTouchStart={() => setIsPaused(true)}
+            onTouchEnd={() => setTimeout(() => setIsPaused(false), 2000)}
+
             style={{ 
               width: '100%', 
               position: 'relative', 
-              overflow: 'hidden', 
+              overflowX: 'auto', // TETAP BISA SCROLL MANUAL
               padding: '20px 0',
               marginBottom: '30px',
+              display: 'flex',
+              gap: '25px',
+              paddingLeft: '30px',
+              paddingRight: '30px',
+              scrollBehavior: 'smooth',
+              WebkitOverflowScrolling: 'touch',
+              cursor: 'grab',
+              
               // Masking gradasi kiri-kanan
-              maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
-              WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)' 
+              maskImage: 'linear-gradient(to right, transparent, black 5%, black 95%, transparent)',
+              WebkitMaskImage: 'linear-gradient(to right, transparent, black 5%, black 95%, transparent)' 
             }}
+            className="hide-scrollbar"
           >
-            <motion.div
-              ref={contentRef}
-              style={{ 
-                display: 'flex', 
-                gap: '25px', 
-                width: 'max-content',
-                paddingLeft: '30px', 
-                paddingRight: '30px' 
-              }}
-              // LOGIKA ANIMASI PING-PONG
-              animate={{ x: scrollWidth > 0 ? [0, -scrollWidth] : 0 }} 
-              transition={{ 
-                ease: "linear", 
-                duration: Math.max(15, videos.length * 6), // Durasi disesuaikan jumlah video
-                repeat: Infinity,
-                repeatType: "mirror", 
-                repeatDelay: 1 
-              }}
-            >
-              {videos.map((vid) => (
-                <motion.div
-                  key={vid.id}
-                  whileHover={{ scale: 1.05, rotate: 0, zIndex: 10, y: -10 }}
-                  onClick={() => setSelectedVideo(vid)}
-                  style={{
-                    position: 'relative',
-                    width: '220px',    
-                    height: '350px',   
-                    flexShrink: 0,
-                    borderRadius: '20px',
-                    overflow: 'hidden',
-                    cursor: 'pointer',
-                    boxShadow: '0 15px 35px rgba(0,0,0,0.15)',
-                    border: '4px solid white',
-                    background: '#000',
-                    transform: 'rotate(-2deg)' // Miring dikit biar estetik
-                  }}
-                >
-                  <video 
-                    src={vid.video_url}
-                    muted 
-                    loop 
-                    playsInline
-                    // onMouseOver={event => event.target.play()} // Opsional: Play pas di-hover
-                    // onMouseOut={event => event.target.pause()}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.9 }} 
-                  />
-                  
-                  {/* Overlay Gradient Bawah */}
-                  <div style={{
-                    position: 'absolute',
-                    bottom: 0, left: 0, width: '100%', padding: '20px 15px',
-                    background: 'linear-gradient(to top, rgba(0,0,0,0.9), transparent)',
-                    color: 'white',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'flex-end'
-                  }}>
-                    <h3 style={{ fontSize: '1.1rem', fontWeight: 'bold', fontFamily: "'Playfair Display', serif" }}>{vid.name}</h3>
-                    <p style={{ fontSize: '0.8rem', opacity: 0.8 }}>{vid.relation}</p>
-                  </div>
-                  
-                  {/* Icon Play Tengah */}
-                  <div style={{ 
-                    position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', 
-                    fontSize: '3rem', color: 'white', opacity: 0.8,
-                    filter: 'drop-shadow(0 2px 5px rgba(0,0,0,0.5))'
-                  }}>
-                    ▶
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
+            {/* CSS Hide Scrollbar */}
+            <style>{`
+              .hide-scrollbar::-webkit-scrollbar { display: none; }
+              .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+            `}</style>
+
+            {videos.map((vid) => (
+              <motion.div
+                key={vid.id}
+                whileHover={{ scale: 1.05, rotate: 0, zIndex: 10, y: -10 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setSelectedVideo(vid)}
+                style={{
+                  position: 'relative',
+                  width: '220px',    
+                  height: '350px',   
+                  flexShrink: 0,
+                  borderRadius: '20px',
+                  overflow: 'hidden',
+                  cursor: 'pointer',
+                  boxShadow: '0 15px 35px rgba(0,0,0,0.15)',
+                  border: '4px solid white',
+                  background: '#000',
+                  transform: 'rotate(-2deg)' // Miring dikit biar estetik
+                }}
+              >
+                <video 
+                  src={vid.video_url}
+                  muted 
+                  loop 
+                  playsInline
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.9 }} 
+                />
+                
+                {/* Overlay Gradient Bawah */}
+                <div style={{
+                  position: 'absolute',
+                  bottom: 0, left: 0, width: '100%', padding: '20px 15px',
+                  background: 'linear-gradient(to top, rgba(0,0,0,0.9), transparent)',
+                  color: 'white',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'flex-end'
+                }}>
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 'bold', fontFamily: "'Playfair Display', serif" }}>{vid.name}</h3>
+                  <p style={{ fontSize: '0.8rem', opacity: 0.8 }}>{vid.relation}</p>
+                </div>
+                
+                {/* Icon Play Tengah */}
+                <div style={{ 
+                  position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', 
+                  fontSize: '3rem', color: 'white', opacity: 0.8,
+                  filter: 'drop-shadow(0 2px 5px rgba(0,0,0,0.5))'
+                }}>
+                  ▶
+                </div>
+              </motion.div>
+            ))}
           </div>
         )}
 
@@ -279,4 +300,4 @@ const VideoMessages = () => {
   );
 };
 
-export default VideoMessages; 
+export default VideoMessages;
