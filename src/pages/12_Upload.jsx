@@ -143,6 +143,12 @@ const Upload = () => {
 
   return (
     <PageTransition>
+      {/* GLOBAL STYLE UTK HILANGKAN SCROLLBAR */}
+      <style>{`
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
+
       <div style={{ 
         position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
         overflow: 'hidden', 
@@ -153,26 +159,27 @@ const Upload = () => {
         fontFamily: "'Inter', sans-serif"
       }}>
 
-        {/* --- DEKORASI BACKGROUND --- */}
+        {/* DEKORASI BACKGROUND */}
         <motion.div animate={{ y: [0, -20, 0] }} transition={{ duration: 6, repeat: Infinity }} style={{ position: 'absolute', top: '10%', left: '5%', fontSize: '4rem', opacity: 0.1 }}>🎈</motion.div>
         <motion.div animate={{ y: [0, 20, 0] }} transition={{ duration: 7, repeat: Infinity }} style={{ position: 'absolute', bottom: '15%', right: '5%', fontSize: '5rem', opacity: 0.1 }}>🎁</motion.div>
-        <motion.div animate={{ rotate: [0, 10, 0] }} transition={{ duration: 8, repeat: Infinity }} style={{ position: 'absolute', top: '20%', right: '15%', fontSize: '3rem', opacity: 0.1 }}>✨</motion.div>
 
-        {/* --- CARD UTAMA --- */}
+        {/* --- CARD UTAMA RESPONSIVE --- */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="glass-panel"
+          className="glass-panel hide-scrollbar" // CLASS HIDE SCROLLBAR DITERAPKAN DISINI
           style={{
             maxWidth: '550px',
             width: '100%',
+            // Tinggi responsif: Max 95vh, tapi kalau konten sedikit dia mengecil
+            maxHeight: '92vh', 
             background: 'rgba(255, 255, 255, 0.95)',
             backdropFilter: 'blur(20px)',
-            borderRadius: '30px',
-            padding: '30px',
+            borderRadius: '25px',
+            // Padding responsif: Lebih kecil di HP
+            padding: '25px 20px', 
             boxShadow: '0 25px 60px rgba(0,0,0,0.15)',
-            maxHeight: '95vh', 
-            overflowY: 'auto', 
+            overflowY: 'auto', // Scroll internal aktif tapi bar hilang
             display: 'flex', flexDirection: 'column',
             position: 'relative',
             zIndex: 10,
@@ -186,12 +193,11 @@ const Upload = () => {
               <button 
                 onClick={() => setStatus('idle')}
                 style={{ 
-                  position: 'absolute', left: 0, top: '5px',
+                  position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)',
                   background: '#f1f5f9', border: 'none', 
-                  width: '35px', height: '35px', borderRadius: '50%',
+                  width: '32px', height: '32px', borderRadius: '50%',
                   cursor: 'pointer', color: '#64748b', fontSize: '1.2rem',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
+                  display: 'flex', alignItems: 'center', justifyContent: 'center'
                 }}
               >
                 ←
@@ -199,16 +205,17 @@ const Upload = () => {
             )}
 
             <h2 style={{ 
-              fontSize: '1.8rem', color: '#1e293b', 
+              fontSize: '1.6rem', // Font size responsive
+              color: '#1e293b', 
               fontWeight: '800', margin: '0 0 5px 0',
               background: 'linear-gradient(to right, #ec4899, #8b5cf6)',
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
               fontFamily: "'Playfair Display', serif"
             }}>
-              {status === 'success' ? 'Yeay! Terkirim! 🎉' : status === 'gallery' ? 'Gallery' : 'Kirim Video 🎥'}
+              {status === 'success' ? 'Terkirim! 🎉' : status === 'gallery' ? 'Kenangan 📸' : 'Kirim Video 🎥'}
             </h2>
-            <p style={{ color: '#64748b', fontSize: '0.9rem', margin: 0, fontWeight: '500' }}>
-              {status === 'success' ? 'Makasih udah ikut ngeramein!' : status === 'gallery' ? 'Kumpulan doa terbaik buat Thia.' : 'Rekam doa & harapanmu buat Thia!'}
+            <p style={{ color: '#64748b', fontSize: '0.85rem', margin: 0, fontWeight: '500' }}>
+              {status === 'success' ? 'Makasih udah ngeramein!' : status === 'gallery' ? 'Doa terbaik buat Thia.' : 'Rekam doa & harapanmu!'}
             </p>
           </div>
 
@@ -231,45 +238,47 @@ const Upload = () => {
                       style={{ 
                         background: 'linear-gradient(45deg, #ec4899, #8b5cf6)',
                         color: 'white', border: 'none',
-                        padding: '12px 25px', borderRadius: '50px',
-                        fontSize: '0.95rem', fontWeight: 'bold', cursor: 'pointer',
+                        padding: '10px 20px', borderRadius: '50px',
+                        fontSize: '0.9rem', fontWeight: 'bold', cursor: 'pointer',
                         boxShadow: '0 10px 20px rgba(236, 72, 153, 0.3)'
                       }}
                     >
-                      + Kirim Video Lagi
+                      + Kirim Lagi
                     </motion.button>
                   </div>
                 )}
 
-                <div style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ width: '4px', height: '20px', background: '#ec4899', borderRadius: '2px' }}></div>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#334155', margin: 0 }}>
-                    {status === 'success' ? 'Video Teman Lainnya:' : 'Daftar Video Masuk:'}
+                <div style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{ width: '4px', height: '18px', background: '#ec4899', borderRadius: '2px' }}></div>
+                  <h3 style={{ fontSize: '1rem', fontWeight: 'bold', color: '#334155', margin: 0 }}>
+                    {status === 'success' ? 'Video Lainnya:' : 'Video Masuk:'}
                   </h3>
                 </div>
 
                 {loadingVideos ? (
                   <div style={{ textAlign: 'center', padding: '30px', color: '#94a3b8' }}>
                     <div className="animate-spin" style={{ display: 'inline-block', width: '20px', height: '20px', border: '3px solid #cbd5e1', borderTopColor: '#ec4899', borderRadius: '50%', marginBottom: '10px' }}></div>
-                    <p style={{ fontSize: '0.9rem' }}>Sedang memuat...</p>
+                    <p style={{ fontSize: '0.8rem' }}>Memuat...</p>
                   </div>
                 ) : otherVideos.length === 0 ? (
                   <div style={{ textAlign: 'center', padding: '30px', background: '#f8fafc', borderRadius: '15px' }}>
                     <p style={{ fontSize: '2rem', margin: 0 }}>📭</p>
-                    <p style={{ fontSize: '0.9rem', color: '#94a3b8' }}>Belum ada video nih. Jadilah yang pertama!</p>
+                    <p style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Belum ada video nih.</p>
                   </div>
                 ) : (
-                  /* --- SCROLLABLE GALLERY --- */
+                  /* --- SCROLLABLE GALLERY (Horizontal) --- */
                   <div 
                     className="hide-scrollbar"
                     style={{ 
-                      width: '100%', overflowX: 'auto', display: 'flex', gap: '15px',
-                      padding: '10px 5px 25px 5px', scrollBehavior: 'smooth',
-                      WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none'
+                      width: '100%', 
+                      overflowX: 'auto', 
+                      display: 'flex', 
+                      gap: '12px',
+                      padding: '5px 5px 20px 5px', // Padding bawah utk shadow
+                      scrollBehavior: 'smooth',
+                      WebkitOverflowScrolling: 'touch'
                     }}
                   >
-                    <style>{`.hide-scrollbar::-webkit-scrollbar { display: none; }`}</style>
-
                     {otherVideos.map((vid, i) => (
                       <motion.div
                         key={vid.id}
@@ -280,35 +289,33 @@ const Upload = () => {
                         whileTap={{ scale: 0.98 }}
                         onClick={() => setSelectedVideo(vid)}
                         style={{
-                          position: 'relative', width: '180px', height: '280px', flexShrink: 0,
-                          borderRadius: '18px', overflow: 'hidden', cursor: 'pointer',
-                          boxShadow: '0 10px 25px rgba(0,0,0,0.1)', background: '#000',
-                          border: '3px solid white'
+                          position: 'relative', 
+                          width: '160px', // Responsive: tidak terlalu lebar
+                          height: '260px', 
+                          flexShrink: 0,
+                          borderRadius: '16px', 
+                          overflow: 'hidden', 
+                          cursor: 'pointer',
+                          boxShadow: '0 8px 20px rgba(0,0,0,0.1)', 
+                          background: '#000',
+                          border: '2px solid white'
                         }}
                       >
                         <video src={vid.video_url} muted loop playsInline style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.9 }} />
                         
-                        {/* Overlay Info */}
                         <div style={{
-                          position: 'absolute', bottom: 0, left: 0, width: '100%', padding: '15px 12px',
+                          position: 'absolute', bottom: 0, left: 0, width: '100%', padding: '12px 10px',
                           background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%)',
                           color: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'
                         }}>
-                          <h3 style={{ fontSize: '0.9rem', fontWeight: 'bold', margin: 0, lineHeight: 1.2 }}>{vid.name}</h3>
-                          <span style={{ fontSize: '0.7rem', opacity: 0.8, marginTop: '2px', background: 'rgba(255,255,255,0.2)', padding: '2px 6px', borderRadius: '4px', width: 'fit-content' }}>
-                            {vid.relation}
-                          </span>
+                          <h3 style={{ fontSize: '0.85rem', fontWeight: 'bold', margin: 0, lineHeight: 1.2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{vid.name}</h3>
+                          <span style={{ fontSize: '0.65rem', opacity: 0.8 }}>{vid.relation}</span>
                         </div>
                         
-                        {/* Play Icon */}
                         <div style={{ 
                           position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', 
-                          width: '40px', height: '40px', background: 'rgba(255,255,255,0.3)', backdropFilter: 'blur(5px)',
-                          borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          border: '1px solid rgba(255,255,255,0.5)'
-                        }}>
-                          <div style={{ width: 0, height: 0, borderLeft: '12px solid white', borderTop: '8px solid transparent', borderBottom: '8px solid transparent', marginLeft: '4px' }}></div>
-                        </div>
+                          fontSize: '1.5rem', color: 'rgba(255,255,255,0.8)'
+                        }}>▶</div>
                       </motion.div>
                     ))}
                   </div>
@@ -320,7 +327,7 @@ const Upload = () => {
                 key="form"
                 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
                 onSubmit={handleSubmit} 
-                style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}
+                style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}
               >
                 
                 {/* Tombol Lihat Galeri */}
@@ -334,14 +341,14 @@ const Upload = () => {
                       cursor: 'pointer', fontWeight: '600', display: 'inline-flex', alignItems: 'center', gap: '5px'
                     }}
                   >
-                    📸 Lihat Galeri Video
+                    📸 Lihat Galeri
                   </button>
                 </div>
 
-                {/* Input Data Diri */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 'bold', marginLeft: '5px', marginBottom: '5px', display: 'block' }}>Nama Kamu</label>
+                {/* Input Data Diri (RESPONSIVE FLEX) */}
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                  <div style={{ flex: '1 1 140px' }}> {/* Minimal lebar 140px, lalu wrap */}
+                    <label style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 'bold', marginLeft: '5px', marginBottom: '4px', display: 'block' }}>Nama Kamu</label>
                     <input
                       type="text" required
                       value={formData.name}
@@ -349,15 +356,13 @@ const Upload = () => {
                       style={{ 
                         width: '100%', padding: '12px', borderRadius: '12px', 
                         border: '1px solid #e2e8f0', fontSize: '0.9rem', outline: 'none',
-                        background: '#f8fafc', transition: 'all 0.2s'
+                        background: '#f8fafc'
                       }}
-                      placeholder="masukkan namamu"
-                      onFocus={(e) => e.target.style.borderColor = '#ec4899'}
-                      onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
+                      placeholder="Masukkan nama mu"
                     />
                   </div>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 'bold', marginLeft: '5px', marginBottom: '5px', display: 'block' }}>Hubungan</label>
+                  <div style={{ flex: '1 1 140px' }}>
+                    <label style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 'bold', marginLeft: '5px', marginBottom: '4px', display: 'block' }}>Hubungan</label>
                     <select
                       required
                       value={formData.relation}
@@ -377,23 +382,24 @@ const Upload = () => {
                   </div>
                 </div>
 
-                {/* AREA REKAM VIDEO (CAMERA UI) */}
+                {/* AREA REKAM VIDEO (RESPONSIVE HEIGHT) */}
                 <div style={{ 
-                  width: '100%', height: '380px', 
-                  background: '#000', borderRadius: '25px', 
+                  width: '100%', 
+                  height: 'min(350px, 50vh)', // Tinggi responsif: Maks 350px atau 50% layar
+                  background: '#000', borderRadius: '20px', 
                   overflow: 'hidden', position: 'relative',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  boxShadow: '0 15px 40px rgba(0,0,0,0.2)', border: '4px solid #1e293b'
+                  boxShadow: '0 10px 30px rgba(0,0,0,0.2)', border: '3px solid #1e293b'
                 }}>
                   {status === 'idle' && (
                     <div style={{ textAlign: 'center', color: 'white' }}>
                       <motion.div 
                         animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity }}
-                        style={{ fontSize: '3rem', marginBottom: '10px' }}
+                        style={{ fontSize: '2.5rem', marginBottom: '8px' }}
                       >
                         📷
                       </motion.div>
-                      <p style={{ opacity: 0.8, fontSize: '0.9rem' }}>Siap merekam?</p>
+                      <p style={{ opacity: 0.8, fontSize: '0.85rem' }}>Siap merekam?</p>
                     </div>
                   )}
 
@@ -405,46 +411,40 @@ const Upload = () => {
                     <video src={videoPreview} controls playsInline style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                   )}
 
-                  {/* UI CONTROLS DI DALAM KAMERA */}
+                  {/* UI CONTROLS */}
                   <div style={{ 
-                    position: 'absolute', bottom: '20px', left: 0, width: '100%', 
+                    position: 'absolute', bottom: '15px', left: 0, width: '100%', 
                     display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px', zIndex: 10 
                   }}>
                     {status === 'idle' && (
                       <motion.button 
-                        type="button" 
-                        whileTap={{ scale: 0.9 }}
-                        onClick={startRecording} 
+                        type="button" whileTap={{ scale: 0.9 }} onClick={startRecording} 
                         style={{ 
-                          width: '60px', height: '60px', borderRadius: '50%',
+                          width: '55px', height: '55px', borderRadius: '50%',
                           background: '#ef4444', border: '4px solid rgba(255,255,255,0.5)',
-                          cursor: 'pointer', boxShadow: '0 0 20px rgba(239, 68, 68, 0.6)'
+                          cursor: 'pointer', boxShadow: '0 0 15px rgba(239, 68, 68, 0.6)'
                         }}
                       />
                     )}
                     {status === 'recording' && (
                       <motion.button 
-                        type="button" 
-                        whileTap={{ scale: 0.9 }}
-                        onClick={stopRecording} 
+                        type="button" whileTap={{ scale: 0.9 }} onClick={stopRecording} 
                         style={{ 
-                          width: '60px', height: '60px', borderRadius: '50%',
+                          width: '55px', height: '55px', borderRadius: '50%',
                           background: 'white', border: '4px solid rgba(255,0,0,0.5)',
                           display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'
                         }}
                       >
-                        <div style={{ width: '24px', height: '24px', background: '#ef4444', borderRadius: '4px' }}></div>
+                        <div style={{ width: '20px', height: '20px', background: '#ef4444', borderRadius: '4px' }}></div>
                       </motion.button>
                     )}
                     {status === 'review' && (
                       <motion.button 
-                        type="button" 
-                        whileTap={{ scale: 0.95 }}
-                        onClick={retakeVideo} 
+                        type="button" whileTap={{ scale: 0.95 }} onClick={retakeVideo} 
                         style={{ 
-                          padding: '10px 20px', background: 'rgba(255,255,255,0.2)', 
+                          padding: '8px 18px', background: 'rgba(255,255,255,0.2)', 
                           color: 'white', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '30px', 
-                          cursor: 'pointer', backdropFilter: 'blur(5px)', fontSize: '0.9rem', fontWeight: '500'
+                          cursor: 'pointer', backdropFilter: 'blur(5px)', fontSize: '0.85rem'
                         }}
                       >
                         ↺ Ulangi
@@ -454,11 +454,11 @@ const Upload = () => {
 
                   {status === 'recording' && (
                     <div style={{ 
-                      position: 'absolute', top: '20px', left: '50%', transform: 'translateX(-50%)',
-                      background: 'rgba(0,0,0,0.5)', color: 'white', padding: '5px 15px', 
-                      borderRadius: '20px', fontSize: '0.8rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px'
+                      position: 'absolute', top: '15px', left: '50%', transform: 'translateX(-50%)',
+                      background: 'rgba(0,0,0,0.5)', color: 'white', padding: '4px 12px', 
+                      borderRadius: '15px', fontSize: '0.75rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px'
                     }}>
-                      <div className="animate-pulse" style={{ width: '8px', height: '8px', background: '#ef4444', borderRadius: '50%' }}></div>
+                      <div className="animate-pulse" style={{ width: '6px', height: '6px', background: '#ef4444', borderRadius: '50%' }}></div>
                       REC
                     </div>
                   )}
@@ -466,19 +466,17 @@ const Upload = () => {
 
                 {/* Input Pesan */}
                 <div>
-                  <label style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 'bold', marginLeft: '5px', marginBottom: '5px', display: 'block' }}>Pesan Singkat</label>
+                  <label style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 'bold', marginLeft: '5px', marginBottom: '4px', display: 'block' }}>Pesan Singkat</label>
                   <textarea
                     required
                     value={formData.message}
                     onChange={e => setFormData({...formData, message: e.target.value})}
                     style={{ 
-                      width: '100%', padding: '15px', borderRadius: '15px', 
-                      border: '1px solid #e2e8f0', minHeight: '80px', fontSize: '0.95rem', fontFamily: 'inherit',
-                      background: '#f8fafc', outline: 'none'
+                      width: '100%', padding: '12px', borderRadius: '15px', 
+                      border: '1px solid #e2e8f0', minHeight: '70px', fontSize: '0.9rem', fontFamily: 'inherit',
+                      background: '#f8fafc', outline: 'none', resize: 'none'
                     }}
-                    placeholder="Tulis harapan & doa kamu disini..."
-                    onFocus={(e) => e.target.style.borderColor = '#ec4899'}
-                    onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
+                    placeholder="Tulis harapan kamu..."
                   />
                 </div>
 
@@ -486,23 +484,22 @@ const Upload = () => {
                 {status === 'review' && (
                   <motion.button
                     type="submit"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                     disabled={uploading}
                     className="btn-glow"
                     style={{ 
-                      width: '100%', padding: '16px', fontSize: '1.1rem', 
+                      width: '100%', padding: '14px', fontSize: '1rem', 
                       opacity: uploading ? 0.7 : 1, cursor: uploading ? 'not-allowed' : 'pointer',
                       borderRadius: '15px', marginTop: '5px'
                     }}
                   >
-                    {uploading ? 'Mengirim Video...' : 'Kirim Video Sekarang 🚀'}
+                    {uploading ? 'Mengirim...' : 'Kirim Video 🚀'}
                   </motion.button>
                 )}
 
                 {status === 'error' && (
-                  <div style={{ background: '#fee2e2', color: '#b91c1c', padding: '10px', borderRadius: '10px', textAlign: 'center', fontSize: '0.9rem' }}>
-                    ❌ Gagal upload. Coba lagi atau cek koneksi internet.
+                  <div style={{ background: '#fee2e2', color: '#b91c1c', padding: '10px', borderRadius: '10px', textAlign: 'center', fontSize: '0.8rem' }}>
+                    ❌ Gagal upload. Coba lagi.
                   </div>
                 )}
 
@@ -512,7 +509,7 @@ const Upload = () => {
 
         </motion.div>
 
-        {/* === MODAL VIDEO PLAYER === */}
+        {/* === MODAL VIDEO PLAYER RESPONSIVE === */}
         <AnimatePresence>
           {selectedVideo && (
             <motion.div
@@ -522,24 +519,24 @@ const Upload = () => {
                 position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
                 background: 'rgba(0, 0, 0, 0.9)', zIndex: 100,
                 display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px',
-                backdropFilter: 'blur(10px)'
+                backdropFilter: 'blur(5px)'
               }}
             >
               <motion.div
                 initial={{ scale: 0.8, opacity: 0, y: 50 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.8, opacity: 0, y: 50 }}
                 onClick={(e) => e.stopPropagation()}
                 style={{
-                  background: 'white', borderRadius: '25px', width: '100%', maxWidth: '500px',
+                  background: 'white', borderRadius: '20px', width: '100%', maxWidth: '500px',
                   overflow: 'hidden', position: 'relative', boxShadow: '0 25px 50px rgba(0,0,0,0.5)',
-                  display: 'flex', flexDirection: 'column', maxHeight: '90vh'
+                  display: 'flex', flexDirection: 'column', maxHeight: '85vh'
                 }}
               >
-                <div style={{ padding: '20px', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'white' }}>
+                <div style={{ padding: '15px 20px', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'white' }}>
                   <div>
-                    <h3 style={{ fontSize: '1.2rem', color: '#1e293b', fontWeight: 'bold', fontFamily: "'Playfair Display', serif" }}>{selectedVideo.name}</h3>
-                    {selectedVideo.message && <p style={{ fontSize: '0.9rem', color: '#64748b', marginTop: '2px', fontStyle: 'italic' }}>"{selectedVideo.message}"</p>}
+                    <h3 style={{ fontSize: '1.1rem', color: '#1e293b', fontWeight: 'bold', fontFamily: "'Playfair Display', serif" }}>{selectedVideo.name}</h3>
+                    {selectedVideo.message && <p style={{ fontSize: '0.85rem', color: '#64748b', marginTop: '2px', fontStyle: 'italic' }}>"{selectedVideo.message}"</p>}
                   </div>
-                  <button onClick={() => setSelectedVideo(null)} style={{ background: '#fee2e2', border: 'none', color: '#ef4444', width: '36px', height: '36px', borderRadius: '50%', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>✕</button>
+                  <button onClick={() => setSelectedVideo(null)} style={{ background: '#fee2e2', border: 'none', color: '#ef4444', width: '32px', height: '32px', borderRadius: '50%', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
                 </div>
                 <div style={{ background: 'black', flexGrow: 1, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <video controls autoPlay playsInline style={{ width: '100%', height: '100%', maxHeight: '70vh', objectFit: 'contain' }}>
