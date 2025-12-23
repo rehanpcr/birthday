@@ -23,41 +23,6 @@ const Upload = () => {
   const [otherVideos, setOtherVideos] = useState([]);
   const [loadingVideos, setLoadingVideos] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState(null);
-  
-  // LOGIKA AUTO SCROLL + MANUAL SCROLL
-  const scrollRef = useRef(null);
-  const [isPaused, setIsPaused] = useState(false); // Stop gerak kalau user lagi scroll manual
-
-  // --- EFEK: Auto Scroll (Ping-Pong) ---
-  useEffect(() => {
-    const scrollContainer = scrollRef.current;
-    if (!scrollContainer || otherVideos.length === 0) return;
-
-    let animationFrameId;
-    let direction = 1; // 1 = gerak ke kanan, -1 = gerak ke kiri
-    const speed = 0.8; // Kecepatan gerak (makin besar makin cepat)
-
-    const animateScroll = () => {
-      if (!isPaused) {
-        // Cek mentok kanan
-        if (scrollContainer.scrollLeft + scrollContainer.clientWidth >= scrollContainer.scrollWidth - 1) {
-          direction = -1; 
-        } 
-        // Cek mentok kiri
-        else if (scrollContainer.scrollLeft <= 0) {
-          direction = 1;
-        }
-        
-        scrollContainer.scrollLeft += direction * speed;
-      }
-      animationFrameId = requestAnimationFrame(animateScroll);
-    };
-
-    // Mulai animasi
-    animationFrameId = requestAnimationFrame(animateScroll);
-
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [isPaused, otherVideos]); // Efek ulang kalau pause berubah atau video nambah
 
   // --- EFEK: Fetch Video ---
   useEffect(() => {
@@ -245,27 +210,30 @@ const Upload = () => {
                 ) : otherVideos.length === 0 ? (
                   <p style={{ fontSize: '0.9rem', color: '#94a3b8', textAlign: 'center' }}>Belum ada video lain.</p>
                 ) : (
-                  /* --- GALERI SCROLL CONTAINER --- */
+                  /* --- GALERI SCROLL MANUAL (SCROLLBAR HIDDEN) --- */
                   <div 
-                    ref={scrollRef}
-                    // Event Handlers untuk Stop/Resume Auto Scroll
-                    onMouseEnter={() => setIsPaused(true)}
-                    onMouseLeave={() => setIsPaused(false)}
-                    onTouchStart={() => setIsPaused(true)}
-                    onTouchEnd={() => setTimeout(() => setIsPaused(false), 2000)} // Delay dikit pas lepas sentuh di HP
-                    
                     style={{ 
                       width: '100%', 
-                      overflowX: 'auto', // TETAP BISA SCROLL MANUAL
+                      overflowX: 'auto', // TETAP BISA SCROLL
                       display: 'flex',
                       gap: '15px',
                       padding: '10px 5px 20px 5px',
                       scrollBehavior: 'smooth',
-                      WebkitOverflowScrolling: 'touch',
-                      cursor: 'grab'
+                      WebkitOverflowScrolling: 'touch', // Smooth scroll di HP
+                      
+                      // HILANGKAN SCROLLBAR (CSS Inline)
+                      scrollbarWidth: 'none', // Firefox
+                      msOverflowStyle: 'none' // IE/Edge
                     }}
                     className="hide-scrollbar" 
                   >
+                    {/* HILANGKAN SCROLLBAR (Chrome/Safari/Opera) */}
+                    <style>{`
+                      .hide-scrollbar::-webkit-scrollbar {
+                        display: none; 
+                      }
+                    `}</style>
+
                     {otherVideos.map((vid) => (
                       <motion.div
                         key={vid.id}
@@ -279,6 +247,7 @@ const Upload = () => {
                           flexShrink: 0,
                           borderRadius: '15px', 
                           overflow: 'hidden', 
+                          cursor: 'pointer',
                           boxShadow: '0 5px 15px rgba(0,0,0,0.1)', 
                           border: '2px solid white',
                           background: '#000'
@@ -301,12 +270,6 @@ const Upload = () => {
                     ))}
                   </div>
                 )}
-                
-                {/* CSS Hide Scrollbar */}
-                <style>{`
-                  .hide-scrollbar::-webkit-scrollbar { display: none; }
-                  .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-                `}</style>
               </motion.div>
             ) : (
               /* --- FORM & REKAM --- */
@@ -331,10 +294,11 @@ const Upload = () => {
                     onChange={e => setFormData({...formData, relation: e.target.value})}
                     style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.95rem', background: 'white' }}
                   >
-                    <option value="">Siapanya thia?</option>
+                    <option value="">Hubungan...</option>
                     <option value="Keluarga">Keluarga</option>
                     <option value="Sahabat">Sahabat</option>
                     <option value="Teman">Teman</option>
+                    <option value="Pacar">Pacar ❤️</option>
                   </select>
                 </div>
 
