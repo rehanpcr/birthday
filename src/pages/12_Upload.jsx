@@ -331,11 +331,10 @@ const Upload = () => {
                     onChange={e => setFormData({...formData, relation: e.target.value})}
                     style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.95rem', background: 'white' }}
                   >
-                    <option value="">Hubungan...</option>
+                    <option value="">Siapanya thia?</option>
                     <option value="Keluarga">Keluarga</option>
                     <option value="Sahabat">Sahabat</option>
                     <option value="Teman">Teman</option>
-                    <option value="Pacar">Pacar ❤️</option>
                   </select>
                 </div>
 
