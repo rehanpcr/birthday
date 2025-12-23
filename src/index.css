@@ -1,0 +1,200 @@
+/* Import Font Premium: 'Outfit' (Modern Sans) & 'Playfair Display' (Elegant Serif) */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap');
+
+:root {
+  /* PALET WARNA DREAMY (Pastel & Deep) */
+  --primary: #6366f1;       /* Indigo */
+  --secondary: #ec4899;     /* Pink */
+  --accent: #8b5cf6;        /* Violet */
+  --text-main: #1e293b;     /* Slate Dark */
+  --text-muted: #ffffffff;    /* Slate Grey */
+  --text-light: #f8fafc;    /* White-ish */
+  
+  /* Glassmorphism Variables */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  
+  /* Animation Speeds */
+  --transition-fast: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  color: var(--text-main);
+  min-height: 100vh;
+  overflow-x: hidden;
+  
+  /* COMPLEX ANIMATED BACKGROUND */
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab, #f0f9ff);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+}
+
+/* --- TYPOGRAPHY --- */
+h1, h2, h3 {
+  font-family: 'Playfair Display', serif; /* Font Romantis */
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+h1 {
+  /* Text Gradient Effect */
+  background: linear-gradient(to right, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+}
+
+/* --- UTILITY CLASSES --- */
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.full-screen {
+  width: 100%;
+  min-height: 100vh;
+  padding: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- GLASSMORPHISM CARD (Panel Kaca) --- */
+/* Gunakan class ini di div pembungkus konten agar tulisan terbaca jelas */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px); /* Efek Blur di belakang */
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 24px;
+  padding: 30px;
+  transition: transform 0.3s ease;
+}
+
+.glass-panel:hover {
+  transform: translateY(-5px); /* Efek melayang saat hover */
+}
+
+/* --- BUTTON PREMIUM (The "Liquid" Button) --- */
+.btn-glow {
+  position: relative;
+  padding: 16px 48px;
+  background: linear-gradient(45deg, var(--primary), var(--secondary));
+  background-size: 200% 200%;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all var(--transition-fast);
+  box-shadow: 0 10px 20px -10px var(--secondary);
+  z-index: 1;
+  margin-top: 30px;
+  
+  /* Animasi background gradient */
+  animation: gradientMove 3s ease infinite;
+}
+
+.btn-glow::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(rgba(255,255,255,0.2), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.btn-glow:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 20px 30px -10px var(--secondary);
+  letter-spacing: 3px;
+}
+
+.btn-glow:hover::before {
+  opacity: 1;
+}
+
+.btn-glow:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* --- FORM INPUTS (Glass Style) --- */
+input, textarea, select {
+  background: rgba(255, 255, 255, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  padding: 15px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  color: var(--text-main);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  outline: none;
+}
+
+input:focus, textarea:focus, select:focus {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+}
+
+/* --- SCROLLBAR CUSTOM --- */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(var(--primary), var(--secondary));
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* --- ANIMATIONS KEYFRAMES --- */
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0px); }
+}
+
+/* Helper Animation Class */
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
