@@ -298,7 +298,7 @@ const Upload = () => {
                     <option value="Keluarga">Keluarga</option>
                     <option value="Sahabat">Sahabat</option>
                     <option value="Teman">Teman</option>
-                    <option value="Pacar">Pacar ❤️</option>
+                    <option value="Bos Besar">Bos Besar</option>
                   </select>
                 </div>
 
