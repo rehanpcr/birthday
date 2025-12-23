@@ -409,7 +409,7 @@ const Upload = () => {
                         ref={videoRef} autoPlay muted playsInline 
                         style={{ 
                             width: '100%', height: '100%', 
-                            objectFit: 'contain', // BIAR TIDAK TERPOTONG
+                            objectFit: 'cover', // BIAR TIDAK TERPOTONG
                             transform: 'scaleX(-1)'
                         }} 
                     />
@@ -420,7 +420,7 @@ const Upload = () => {
                         src={videoPreview} controls playsInline 
                         style={{ 
                             width: '100%', height: '100%', 
-                            objectFit: 'contain'
+                            objectFit: 'cover'
                         }} 
                     />
                   )}
